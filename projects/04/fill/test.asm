@@ -1,0 +1,12 @@
+
+(LOOP)
+@24576
+D=M
+@TEST
+D;JNE
+@LOOP
+0;JMP
+
+(TEST)
+@i
+M=-1
