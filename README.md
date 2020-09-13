@@ -1,7 +1,7 @@
 
 # Build a Computer from First Principles - From Nand to Tetris
 
-### Teachers: Shimon Schocken, Noam Nisan (HUJ)
+### Instructors: Shimon Schocken, Noam Nisan (HUJ)
 
 This is a project based coursed on Coursera that teaches computer architecture by building everything hierarchically starting from just a Nand Gate.
 
@@ -24,6 +24,7 @@ make these `*.sh` files executable by running `chmod +x *.sh`
 6. Assembler
 
 (Part 2)
+
 7.  
 8.  
 9.   
@@ -35,3 +36,11 @@ make these `*.sh` files executable by running `chmod +x *.sh`
 
 
 ### Detailed notes:
+
+
+<!-- ### Perspectives:
+Though I work in machine learning and specifically in computer vision research area, I have a non-CS college degree. I learned programming on my own and I use it daily for my work. However I always wanted to know internal workings of computer. So I took this course as  a hobby. At the end of part 1, I am reasonably happy with my understanding. Here are the things I learnt:
+- Building chips from Nand to Computer with several in between, Or,Xor,And,Mux,DMux,Bit,Register,RAM,Memory,CPU,Computer
+- Assembly language
+- Built an assembler in java to convert assembly to machine language.
+Looking forward to part 2 of the course to learn about further layers of abstraction. -->
