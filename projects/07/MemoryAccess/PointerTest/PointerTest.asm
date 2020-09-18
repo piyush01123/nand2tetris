@@ -11,7 +11,7 @@ M=M+1
 M=M-1
 A=M
 D=M
-@THIS
+@3
 M=D
 // L2: push constant 3040
 @3040
@@ -26,7 +26,7 @@ M=M+1
 M=M-1
 A=M
 D=M
-@THAT
+@4
 M=D
 // L4: push constant 32
 @32
@@ -69,7 +69,7 @@ A=A+1
 A=A+1
 M=D
 // L8: push pointer 0
-@THIS
+@3
 D=M
 @0
 A=M
@@ -77,7 +77,7 @@ M=D
 @0
 M=M+1
 // L9: push pointer 1
-@THAT
+@4
 D=M
 @0
 A=M

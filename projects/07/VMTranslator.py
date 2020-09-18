@@ -119,7 +119,7 @@ def pop_temp(i):
 
 def push_pointer(i):
     return '\n'.join([
-        "@{}".format("THIS" if i==0 else "THAT"),
+        "@{}".format(3 if i==0 else 4),
         "D=M",
         "@0",
         "A=M",
@@ -134,7 +134,7 @@ def pop_pointer(i):
         "M=M-1",
         "A=M",
         "D=M",
-        "@{}".format("THIS" if i==0 else "THAT"),
+        "@{}".format(3 if i==0 else 4),
         "M=D",
     ])
 
