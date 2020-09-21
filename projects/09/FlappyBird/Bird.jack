@@ -1,19 +1,25 @@
 
+/** Implements a graphical bird. */
 class Bird{
-  field int x, y;
+  field int x, y;   // screen location of X and Y coordinates of bird.
+
+
+  /** Constructs  a bird with given location */
   constructor Bird new(int ay){
-    let x=16; //can be anything from 0 to 32. 16 is center
-    let y=ay;
+    let x=16;       // we have fixed X-coordinate at 16 ie horizontal centre. (Each row on screen consists of 32 registers)
+    let y=ay;       // Y-coordinate is controlled by user during game
     do draw();
     return this;
   }
 
+
+  /** Draws the bird on screen */
   method void draw(){
-      var int memAddress;
+      var int memAddress; // stores the address of register at top-left corner of bird.
       var int location;
-      let location = ((y*32) + x);
-    	let memAddress = 16384+location;
-    	do Memory.poke(memAddress+0, 8194);
+      let location = ((y*32) + x);         // we want the location at row number "y" and column no. "x" (x is fixed to 16 for us)
+    	let memAddress = 16384+location;     // 16384 is the base address of the screen memory map.
+    	do Memory.poke(memAddress+0, 8194);  // These statements set the pixels in the bird row-wise
     	do Memory.poke(memAddress+32, 4100);
     	do Memory.poke(memAddress+64, 2056);
     	do Memory.poke(memAddress+96, 4088);
@@ -29,30 +35,38 @@ class Bird{
     	do Memory.poke(memAddress+416, 8188);
     	do Memory.poke(memAddress+448, 4088);
     	do Memory.poke(memAddress+480, 0);
-      do Sys.wait(10);
+      do Sys.wait(10);                    // added for stability
      return;
   }
 
+
+  /** Moves the bird up by 1 pixel */
   method void moveUp(){
-    if (y>1){
+    if (y>1){               // We can not move up if bird is touching the top
       let y = y-1;
       do draw();
     }
     return;
   }
 
+
+  /** Moves the bird down by 1 pixel */
   method void moveDown(){
-    if (y<240){
+    if (y<240){           // We can not move up if the bird is touching the bottom
       let y = y+1;
       do draw();
     }
     return;
   }
 
+
+  /** Returns the Y-coordinate of the bird */
   method int getY(){
     return y;
   }
 
+
+  /** Disposes the Bird object */
   method void dispose() {
      do Memory.deAlloc(this);
      return;

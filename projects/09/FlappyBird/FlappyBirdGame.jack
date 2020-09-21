@@ -1,54 +1,76 @@
 
+
+/** Implements a Flappy Bird game */
 class FlappyBirdGame{
-  field Bird bird;
-  field int ceiling;
-  field int floor;
-  field int score;
-  constructor FlappyBirdGame new(){
+  field Bird bird;           // bird used in the game
+  field int ceiling;         // upper wall
+  field int floor;           // lower wall
+  field int score;           // game score
+
+
+  /** Sets up the game */
+  constructor FlappyBirdGame new() {
     let ceiling = 63;
     let floor = 192;
+
+    // draws upper and lower walls
     do Screen.drawRectangle(128, 0, 384, 63);
     do Screen.drawRectangle(128, 192, 384, 255);
-    let bird = Bird.new(128);
+
+    let bird = Bird.new(128); // Bird starts at centre
     return this;
   }
 
+
+  /** Runs the game: handles the user's inputs and moves the square accordingly */
   method void run(){
-    var char key;
-    var int birdY;
+    var char key;              // Key pressed
+    var int birdY;             // Y-coordinate of bird
+
+    // The game runs in an infinite loop till the bird hits a wall
     while (true){
       let key = Keyboard.keyPressed();
-      if (key=32){
+      if (key=32){            // If space is pressed move the bird up
         do bird.moveUp();
       }
       if (key=0){
-        do bird.moveDown();
+        do bird.moveDown();   // The bird keeps falling by default
       }
+
+      // end the game if the bird hits top or bottom wall
       let birdY = bird.getY();
       if (birdY<ceiling){
         do printScore();
+        return;               // exit infinite loop if hit
       }
       if (birdY>floor){
         do printScore();
-        return;
+        return;               // exit infinite loop if hit
       }
-      let score = score + 1;
+      let score = score + 1;  // Score increment till the game's infinite loop is running
     }
     return;
   }
 
+
+  /** Prints score on screen */
   method void printScore(){
+    // Clear the screen before printing score
     do Screen.setColor(false);
-    do Screen.drawRectangle(0, 0, 511, 255);
-    do Screen.setColor(true);
+    do Screen.drawRectangle(0, 0, 511, 255); //White square filling the screen
+
+    do Screen.setColor(true);                // Now use black to print
+
     do Output.printString("SCORE:");
-    do Output.printInt(score);
+    do Output.printInt(score);              // prints score
     return;
   }
 
+
+  /** Disposes the Flappy Bird game object */
   method void dispose(){
-    do bird.dispose();
-    do Memory.deAlloc(this);
+    do bird.dispose();                     // disposes bird object of the game
+    do Memory.deAlloc(this);               // disposes itself
     return;
   }
 

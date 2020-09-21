@@ -1,4 +1,5 @@
 
+/** Initializes a new Flappy Bird game game and starts running it. */
 class Main {
     function void main() {
         var FlappyBirdGame game;
