@@ -19,9 +19,10 @@ class Bird{
       var int location;
       let location = ((y*32) + x);         // we want the location at row number "y" and column no. "x" (x is fixed to 16 for us)
     	let memAddress = 16384+location;     // 16384 is the base address of the screen memory map.
-    	do Memory.poke(memAddress+0, 8194);  // These statements set the pixels in the bird row-wise
-    	do Memory.poke(memAddress+32, 4100);
-    	do Memory.poke(memAddress+64, 2056);
+    	// The following statements set the pixels in the bird row-wise
+      do Memory.poke(memAddress+0, 24579);
+    	do Memory.poke(memAddress+32, 12294);
+    	do Memory.poke(memAddress+64, 6156);
     	do Memory.poke(memAddress+96, 4088);
     	do Memory.poke(memAddress+128, 8188);
     	do Memory.poke(memAddress+160, 16382);
@@ -29,12 +30,12 @@ class Bird{
     	do Memory.poke(memAddress+224, 32767);
     	do Memory.poke(memAddress+256, 32767);
     	do Memory.poke(memAddress+288, 32767);
-    	do Memory.poke(memAddress+320, 32223);
-    	do Memory.poke(memAddress+352, 32319);
+    	do Memory.poke(memAddress+320, 32767);
+    	do Memory.poke(memAddress+352, 32767);
     	do Memory.poke(memAddress+384, 16382);
     	do Memory.poke(memAddress+416, 8188);
-    	do Memory.poke(memAddress+448, 4088);
-    	do Memory.poke(memAddress+480, 0);
+    	do Memory.poke(memAddress+448, 12282);
+    	do Memory.poke(memAddress+480, 18417);
       do Sys.wait(10);                    // added for stability
      return;
   }

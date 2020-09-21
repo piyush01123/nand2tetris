@@ -30,6 +30,12 @@ class FlappyBirdGame{
     // The game runs in an infinite loop till the bird hits a wall
     while (true){
       let key = Keyboard.keyPressed();
+
+      //White square filling the game area (area between the two walls)
+      do Screen.setColor(false);
+      do Screen.drawRectangle(128, 64, 384, 191);
+      do Screen.setColor(true); // set color back to black
+
       if (key=32){            // If space is pressed move the bird up
         do bird.moveUp();
       }
@@ -43,7 +49,7 @@ class FlappyBirdGame{
         do printScore();
         return;               // exit infinite loop if hit
       }
-      if (birdY>floor){
+      if ((birdY+16)>floor){  // 16 pixels is the height of the bird
         do printScore();
         return;               // exit infinite loop if hit
       }
