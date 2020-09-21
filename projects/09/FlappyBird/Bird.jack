@@ -11,13 +11,7 @@ class Bird{
   method void draw(){
       var int memAddress;
       var int location;
-
       let location = ((y*32) + x);
-
-      do Screen.setColor(false);
-      do Screen.drawRectangle(0, 0, 511, 255);
-      do Screen.setColor(true);
-
     	let memAddress = 16384+location;
     	do Memory.poke(memAddress+0, 8194);
     	do Memory.poke(memAddress+32, 4100);
@@ -35,6 +29,7 @@ class Bird{
     	do Memory.poke(memAddress+416, 8188);
     	do Memory.poke(memAddress+448, 4088);
     	do Memory.poke(memAddress+480, 0);
+      do Sys.wait(10);
      return;
   }
 

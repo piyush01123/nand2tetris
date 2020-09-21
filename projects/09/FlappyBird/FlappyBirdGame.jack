@@ -10,8 +10,18 @@ class FlappyBirdGame{
     var char key;
     while (true){
       let key = Keyboard.keyPressed();
-      if (key=32){do bird.moveUp();}
-      if (key=0){do bird.moveDown();}
+      if (key=32){
+        do Screen.setColor(false);
+        do Screen.drawRectangle(0, 0, 511, 255);
+        do Screen.setColor(true);
+        do bird.moveUp();
+      }
+      if (key=0){
+        do Screen.setColor(false);
+        do Screen.drawRectangle(0, 0, 511, 255);
+        do Screen.setColor(true);
+        do bird.moveDown();
+      }
     }
     return;
   }
