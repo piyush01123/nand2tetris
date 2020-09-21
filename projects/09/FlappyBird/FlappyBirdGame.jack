@@ -1,0 +1,25 @@
+
+class FlappyBirdGame{
+  field Bird bird;
+  constructor FlappyBirdGame new(){
+    let bird = Bird.new(128);
+    return this;
+  }
+
+  method void run(){
+    var char key;
+    while (true){
+      let key = Keyboard.keyPressed();
+      if (key=32){do bird.moveUp();}
+      if (key=0){do bird.moveDown();}
+    }
+    return;
+  }
+
+  method void dispose(){
+    do bird.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+
+}

@@ -1,0 +1,62 @@
+
+class Bird{
+  field int x, y;
+  constructor Bird new(int ay){
+    let x=8; //can be anything from 0 to 32. 8 is in centre of left half
+    let y=ay;
+    do draw();
+    return this;
+  }
+
+  method void draw(){
+      var int memAddress;
+      var int location;
+
+      let location = ((y*32) + x);
+
+      do Screen.setColor(false);
+      do Screen.drawRectangle(0, 0, 511, 255);
+      do Screen.setColor(true);
+
+    	let memAddress = 16384+location;
+    	do Memory.poke(memAddress+0, 8194);
+    	do Memory.poke(memAddress+32, 4100);
+    	do Memory.poke(memAddress+64, 2056);
+    	do Memory.poke(memAddress+96, 4088);
+    	do Memory.poke(memAddress+128, 8188);
+    	do Memory.poke(memAddress+160, 16382);
+    	do Memory.poke(memAddress+192, 32223);
+    	do Memory.poke(memAddress+224, 32767);
+    	do Memory.poke(memAddress+256, 32767);
+    	do Memory.poke(memAddress+288, 32767);
+    	do Memory.poke(memAddress+320, 32223);
+    	do Memory.poke(memAddress+352, 32319);
+    	do Memory.poke(memAddress+384, 16382);
+    	do Memory.poke(memAddress+416, 8188);
+    	do Memory.poke(memAddress+448, 4088);
+    	do Memory.poke(memAddress+480, 0);
+     return;
+  }
+
+  method void moveUp(){
+    if (y>1){
+      let y = y-1;
+      do draw();
+    }
+    return;
+  }
+
+  method void moveDown(){
+    if (y<240){
+      let y = y+1;
+      do draw();
+    }
+    return;
+  }
+
+  method void dispose() {
+     do Memory.deAlloc(this);
+     return;
+  }
+
+}
