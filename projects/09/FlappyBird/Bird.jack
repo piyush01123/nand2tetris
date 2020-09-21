@@ -2,7 +2,7 @@
 class Bird{
   field int x, y;
   constructor Bird new(int ay){
-    let x=16; //can be anything from 0 to 32. 8 is in centre of left half
+    let x=16; //can be anything from 0 to 32. 16 is center
     let y=ay;
     do draw();
     return this;
@@ -47,6 +47,10 @@ class Bird{
       do draw();
     }
     return;
+  }
+
+  method int getY(){
+    return y;
   }
 
   method void dispose() {

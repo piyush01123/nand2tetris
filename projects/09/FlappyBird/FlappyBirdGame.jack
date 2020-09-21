@@ -1,31 +1,42 @@
 
 class FlappyBirdGame{
   field Bird bird;
+  field int ceiling;
+  field int score;
   constructor FlappyBirdGame new(){
+    let ceiling = 63;
+    do Screen.drawRectangle(128, 0, 384, 63);
+    do Screen.drawRectangle(128, 192, 384, 255);
     let bird = Bird.new(128);
     return this;
   }
 
   method void run(){
     var char key;
+    var int birdY;
     while (true){
       let key = Keyboard.keyPressed();
       if (key=32){
-        do Screen.setColor(false);
-        do Screen.drawRectangle(0, 0, 511, 255);
-        do Screen.setColor(true);
-        do Screen.drawRectangle(128, 0, 384, 63);
-        do Screen.drawRectangle(128, 192, 384, 255);
         do bird.moveUp();
       }
       if (key=0){
-        do Screen.setColor(false);
-        do Screen.drawRectangle(0, 0, 511, 255);
-        do Screen.setColor(true);
-        do Screen.drawRectangle(128, 0, 384, 63);
-        do Screen.drawRectangle(128, 192, 384, 255);
         do bird.moveDown();
       }
+      let birdY = bird.getY();
+      if (birdY<ceiling){
+        do endGame();
+      }
+      let score = score + 1;
+    }
+    return;
+  }
+
+  method void endGame(){
+    while(true){
+      do Screen.setColor(false);
+      do Screen.drawRectangle(0, 0, 511, 255);
+      //do Output.printString("SCORE:");
+      //do Output.printInt(score);
     }
     return;
   }
