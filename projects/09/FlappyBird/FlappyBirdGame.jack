@@ -2,9 +2,11 @@
 class FlappyBirdGame{
   field Bird bird;
   field int ceiling;
+  field int floor;
   field int score;
   constructor FlappyBirdGame new(){
     let ceiling = 63;
+    let floor = 192;
     do Screen.drawRectangle(128, 0, 384, 63);
     do Screen.drawRectangle(128, 192, 384, 255);
     let bird = Bird.new(128);
@@ -24,20 +26,23 @@ class FlappyBirdGame{
       }
       let birdY = bird.getY();
       if (birdY<ceiling){
-        do endGame();
+        do printScore();
+      }
+      if (birdY>floor){
+        do printScore();
+        return;
       }
       let score = score + 1;
     }
     return;
   }
 
-  method void endGame(){
-    while(true){
-      do Screen.setColor(false);
-      do Screen.drawRectangle(0, 0, 511, 255);
-      //do Output.printString("SCORE:");
-      //do Output.printInt(score);
-    }
+  method void printScore(){
+    do Screen.setColor(false);
+    do Screen.drawRectangle(0, 0, 511, 255);
+    do Screen.setColor(true);
+    do Output.printString("SCORE:");
+    do Output.printInt(score);
     return;
   }
 
