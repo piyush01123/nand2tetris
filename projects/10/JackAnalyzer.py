@@ -187,8 +187,7 @@ class CompilationEngine:
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
-        assert self.tokenizer.tokenType() == "identifier" # class name
-        self.JackClassName = self.tokenizer.identifier()
+        assert self.tokenizer.identifier() # class name
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -220,7 +219,7 @@ class CompilationEngine:
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
-        assert self.tokenizer.tokenType() == "identifier" #varName
+        assert self.tokenizer.identifier() #varName
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -228,7 +227,7 @@ class CompilationEngine:
             self.write_output(self.tokenizer.writeToken())
 
             self.tokenizer.advance()
-            assert self.tokenizer.tokenType() == "identifier" #varName
+            assert self.tokenizer.identifier() #varName
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
 
@@ -249,7 +248,7 @@ class CompilationEngine:
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
-        assert self.tokenizer.tokenType() == "identifier" # fn name/new (both are identifiers)
+        assert self.tokenizer.identifier() # fn name/new (both are identifiers)
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -278,7 +277,7 @@ class CompilationEngine:
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
-        assert self.tokenizer.tokenType() == "identifier" # var name
+        assert self.tokenizer.identifier() # var name
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -291,7 +290,7 @@ class CompilationEngine:
             self.write_output(self.tokenizer.writeToken())
 
             self.tokenizer.advance()
-            assert self.tokenizer.tokenType() == "identifier" # var name
+            assert self.tokenizer.identifier() # var name
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
 
@@ -328,7 +327,7 @@ class CompilationEngine:
         while self.tokenizer.symbol() == ',':
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
-            assert self.tokenizer.tokenType() == "identifier" # var name
+            assert self.tokenizer.identifier() # var name
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
         self.debug("AssertionError??")
@@ -360,7 +359,7 @@ class CompilationEngine:
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
-        assert self.tokenizer.tokenType() == "identifier"
+        assert self.tokenizer.identifier()
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -494,8 +493,6 @@ class CompilationEngine:
     def compileTerm(self):
         self.write_output("<term>")
         self.debug()
-        # it can be srarting from any of the 5 token types
-        assert self.tokenizer.tokenType() in ["symbol", "keyword", "integerConstant", "stringConstant", "identifier"]
 
         if self.tokenizer.intVal() or self.tokenizer.stringVal(): #int/string
             self.write_output(self.tokenizer.writeToken())
@@ -545,7 +542,7 @@ class CompilationEngine:
                 self.write_output(self.tokenizer.writeToken())
                 self.tokenizer.advance()
 
-                assert self.tokenizer.tokenType() == "identifier"
+                assert self.tokenizer.identifier()
                 self.write_output(self.tokenizer.writeToken())
                 self.tokenizer.advance()
 
@@ -575,7 +572,7 @@ class CompilationEngine:
 
 
     def compileSubroutineCall(self):
-        assert self.tokenizer.tokenType() == "identifier"
+        assert self.tokenizer.identifier()
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -591,7 +588,7 @@ class CompilationEngine:
         elif self.tokenizer.symbol()=='.': #subroutinecall
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
-            assert self.tokenizer.tokenType() == "identifier" # subroutinename
+            assert self.tokenizer.identifier() # subroutinename
             self.write_output(self.tokenizer.writeToken())
 
             self.tokenizer.advance()
