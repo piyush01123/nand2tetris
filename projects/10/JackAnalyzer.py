@@ -143,32 +143,22 @@ class JackTokenizerStream:
     def keyWord(self):
         if self.tokenType()=="keyword":
             return self.token
-        return
     def symbol(self):
         if self.tokenType()=="symbol":
             return self.token
-        return
     def identifier(self):
         if self.tokenType()=="identifier":
             return self.token
-        return
     def intVal(self):
         if self.tokenType()=="integerConstant":
             return self.token
-        return
     def stringVal(self):
         if self.tokenType()=="stringConstant":
             return self.token
-        return
     def writeToken(self):
-        if self.token=='<':
-            return "<{}> {} </{}>".format(self.tokenType(),'&lt;',self.tokenType())
-        elif self.token=='>':
-            return "<{}> {} </{}>".format(self.tokenType(),'&gt;',self.tokenType())
-        elif self.token=='"':
-            return "<{}> {} </{}>".format(self.tokenType(),'&quot;',self.tokenType())
-        elif self.token=='&':
-            return "<{}> {} </{}>".format(self.tokenType(),'&amp;',self.tokenType())
+        spl_tokens = {'<':'&lt;', '>':'&gt;', '"':'&quot;', '&':'&amp;'}
+        if self.token in spl_tokens.keys():
+            return "<{}> {} </{}>".format(self.tokenType(),spl_tokens[self.token],self.tokenType())
         else:
             return "<{}> {} </{}>".format(self.tokenType(),self.token,self.tokenType())
 
