@@ -13,9 +13,6 @@ python3 JackAnalyzer.py ArrayTest
 ../../tools/TextComparer.sh Square/MainT.xml Square/cmp/MainT.xml
 ../../tools/TextComparer.sh ArrayTest/MainT.xml ArrayTest/cmp/MainT.xml
 
-python3 JackAnalyzer.py ExpressionLessSquare
-python3 JackAnalyzer.py Square
-python3 JackAnalyzer.py ArrayTest
 
 ../../tools/TextComparer.sh ExpressionLessSquare/Square.xml ExpressionLessSquare/cmp/Square.xml
 ../../tools/TextComparer.sh ExpressionLessSquare/SquareGame.xml ExpressionLessSquare/cmp/SquareGame.xml
