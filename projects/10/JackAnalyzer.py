@@ -198,12 +198,13 @@ class CompilationEngine:
         self.tokenizer.advance()
         while self.tokenizer.keyWord() in ["static", "field"]:
             self.compileClassVarDec()
-            self.tokenizer.advance()
 
         while self.tokenizer.keyWord() in ["constructor", "function", "method"]:
             self.compileSubroutine()
-            self.tokenizer.advance()
 
+        assert self.tokenizer.symbol() == '}'
+        self.write_output(self.tokenizer.writeToken())
+        assert not self.tokenizer.hasMoreTokens()
         self.write_output('</class>')
 
 
@@ -213,11 +214,13 @@ class CompilationEngine:
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
-        assert self.tokenizer.keyWord() in ["int", "char", "boolean"]
+        self.debug("AssertionError?")
+        assert self.tokenizer.keyWord() in ["int", "char", "boolean"] or \
+               self.tokenizer.identifier() # may be String same jackClassName or some other jackClassName
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
-        assert self.tokenizer.tokenType() == "identifier"
+        assert self.tokenizer.tokenType() == "identifier" #varName
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -225,13 +228,14 @@ class CompilationEngine:
             self.write_output(self.tokenizer.writeToken())
 
             self.tokenizer.advance()
-            assert self.tokenizer.tokenType() == "identifier"
+            assert self.tokenizer.tokenType() == "identifier" #varName
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
 
         assert self.tokenizer.symbol() == ';'
         self.write_output(self.tokenizer.writeToken())
         self.write_output("</classVarDec>")
+        self.tokenizer.advance()
 
 
     def compileSubroutine(self):
@@ -241,7 +245,7 @@ class CompilationEngine:
 
         self.tokenizer.advance()
         assert self.tokenizer.keyWord() in ["int", "char", "boolean", "void"] or \
-               self.tokenizer.identifier() in ["String", self.JackClassName]
+               self.tokenizer.identifier() # may be String same jackClassName or some other jackClassName
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -265,12 +269,12 @@ class CompilationEngine:
 
     def compileParameterList(self):
         self.write_output("<parameterList>")
-        if self.tokenizer.symbol()==')':
+        if self.tokenizer.symbol()==')': # no params
             self.write_output("</parameterList>")
             return
 
         assert self.tokenizer.keyWord() in ["int", "char", "boolean"] or \
-               self.tokenizer.identifier() in ["String", self.JackClassName]
+               self.tokenizer.identifier() # may be String same jackClassName or some other jackClassName #dtype of params
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -283,7 +287,7 @@ class CompilationEngine:
 
             self.tokenizer.advance()
             assert self.tokenizer.keyWord() in ["int", "char", "boolean"] or \
-                   self.tokenizer.identifier() in ["String", self.JackClassName]
+                   self.tokenizer.identifier() # may be String same jackClassName or some other jackClassName
             self.write_output(self.tokenizer.writeToken())
 
             self.tokenizer.advance()
@@ -306,6 +310,7 @@ class CompilationEngine:
         assert self.tokenizer.symbol() == '}'
         self.write_output(self.tokenizer.writeToken())
         self.write_output("</subroutineBody>")
+        self.tokenizer.advance()
 
 
     def compileVarDec(self):
@@ -315,20 +320,22 @@ class CompilationEngine:
 
         self.tokenizer.advance()
         assert self.tokenizer.keyWord() in ["int", "char", "boolean"] or \
-               self.tokenizer.identifier() in ["String", self.JackClassName]
+               self.tokenizer.identifier() # may be String same jackClassName or some other jackClassName
         self.write_output(self.tokenizer.writeToken())
-
         self.tokenizer.advance()
-        while self.symbol() == ',':
+
+        self.tokenizer
+        while self.tokenizer.symbol() == ',':
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
             assert self.tokenizer.tokenType() == "identifier" # var name
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
-
+        self.debug("AssertionError??")
         assert self.tokenizer.symbol() == ';'
         self.write_output(self.tokenizer.writeToken())
         self.write_output("</varDec>")
+        self.tokenizer.advance()
 
 
     def compileStatements(self):
@@ -336,25 +343,19 @@ class CompilationEngine:
         while self.tokenizer.keyWord() in ["let", "if", "while", "do", "return"]:
             if self.tokenizer.keyWord() == "let":
                 self.compileLet()
-                self.tokenizer.advance()
             if self.tokenizer.keyWord() == "if":
                 self.compileIf()
-                self.tokenizer.advance()
             if self.tokenizer.keyWord() == "while":
                 self.compileWhile()
-                self.tokenizer.advance()
             if self.tokenizer.keyWord() == "do":
                 self.compileDo()
-                self.tokenizer.advance()
             if self.tokenizer.keyWord() == "return":
                 self.compileReturn()
-                self.tokenizer.advance()
 
         self.write_output("</statements>")
 
     def compileLet(self):
         self.write_output("<letStatement>")
-        # print("CURRTOKEN", self.tokenizer.token)
         assert self.tokenizer.keyWord() == "let"
         self.write_output(self.tokenizer.writeToken())
 
@@ -366,8 +367,9 @@ class CompilationEngine:
         if self.tokenizer.symbol=='[':
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
+
             self.compileExpression()
-            self.tokenizer.advance()
+
             assert self.tokenizer.symbol()==']'
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
@@ -381,30 +383,86 @@ class CompilationEngine:
         assert self.tokenizer.symbol()==';'
         self.write_output(self.tokenizer.writeToken())
         self.write_output("</letStatement>")
+        self.tokenizer.advance()
 
     def compileIf(self):
         self.write_output("<ifStatement>")
-        assert self.tokenizer.keyWord == "if"
+        assert self.tokenizer.keyWord() == "if"
+        self.write_output(self.tokenizer.writeToken())
+        self.tokenizer.advance()
+
+        assert self.tokenizer.symbol()=='('
+        self.write_output(self.tokenizer.writeToken())
+        self.tokenizer.advance()
+
+        self.compileExpression() # condition_expression
+        assert self.tokenizer.symbol()==')'
+        self.write_output(self.tokenizer.writeToken())
+        self.tokenizer.advance()
+
+        assert self.tokenizer.symbol()=='{'
+        self.write_output(self.tokenizer.writeToken())
+        self.tokenizer.advance()
+
+        self.compileStatements()
+
+        assert self.tokenizer.symbol()=='}'
+        self.write_output(self.tokenizer.writeToken())
+        self.tokenizer.advance()
+
+        if self.tokenizer.keyWord()=='else':
+            self.write_output(self.tokenizer.writeToken())
+            self.tokenizer.advance()
+
+            assert self.tokenizer.symbol()=='{'
+            self.write_output(self.tokenizer.writeToken())
+            self.tokenizer.advance()
+
+            self.compileStatements()
+
+            assert self.tokenizer.symbol()=='}'
+            self.write_output(self.tokenizer.writeToken())
+            self.tokenizer.advance()
+
         self.write_output("</ifStatement>")
 
     def compileWhile(self):
         self.write_output("<whileStatement>")
-        assert self.tokenizer.keyWord == "while"
+        assert self.tokenizer.keyWord() == "while"
+
+        assert self.tokenizer.symbol()=='('
+        self.write_output(self.tokenizer.writeToken())
+        self.tokenizer.advance()
+
+        self.compileExpression() # condition_expression
+        assert self.tokenizer.symbol()==')'
+        self.write_output(self.tokenizer.writeToken())
+        self.tokenizer.advance()
+
+        assert self.tokenizer.symbol()=='{'
+        self.write_output(self.tokenizer.writeToken())
+        self.tokenizer.advance()
+
+        self.compileStatements()
+
+        assert self.tokenizer.symbol()=='}'
+        self.write_output(self.tokenizer.writeToken())
+
         self.write_output("</whileStatement>")
+        self.tokenizer.advance()
 
     def compileDo(self):
         self.write_output("<doStatement>")
-        # print("CURRTOKEN", self.tokenizer.token)
         assert self.tokenizer.keyWord() == "do"
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
         self.compileSubroutineCall()
 
-        self.tokenizer.advance()
         assert self.tokenizer.symbol()==';'
         self.write_output(self.tokenizer.writeToken())
         self.write_output("</doStatement>")
+        self.tokenizer.advance()
 
     def compileReturn(self):
         self.write_output("<returnStatement>")
@@ -413,64 +471,42 @@ class CompilationEngine:
 
         self.tokenizer.advance()
 
-        print("CURRTOKENRETURN", self.tokenizer.token)
-        while self.tokenizer.symbol()!=';':
-            print("INLOOP")
+        if self.tokenizer.symbol()!=';':
             self.compileExpression()
 
         assert self.tokenizer.symbol()==';'
         self.write_output(self.tokenizer.writeToken())
         self.write_output("</returnStatement>")
+        self.tokenizer.advance()
 
 
     def compileExpression(self):
         self.write_output("<expression>")
         self.compileTerm()
-        self.tokenizer.advance()
 
-        while self.tokenizer.symbol() in ['+', '-', '*', '/', '&', '|', '<', '>', '=']:
+        while self.tokenizer.symbol() in ['+', '-', '*', '/', '&', '|', '<', '>', '=']: #op term
             self.write_output(self.tokenizer.printToken())
             self.tokenizer.advance()
             self.compileTerm()
-            self.tokenizer.advance()
         self.write_output("</expression>")
 
 
     def compileTerm(self):
         self.write_output("<term>")
-        self.debug(self.tokenizer.tokenType())
+        self.debug()
         # it can be srarting from any of the 5 token types
         assert self.tokenizer.tokenType() in ["symbol", "keyword", "integerConstant", "stringConstant", "identifier"]
 
-        if self.tokenizer.tokenType() in ["integerConstant", "stringConstant"]:
+        if self.tokenizer.intVal() or self.tokenizer.stringVal(): #int/string
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
 
-        elif self.tokenizer.tokenType() == "keyword" and self.tokenizer.keyWord() in \
-                ["true", "false", "null", "this"]:
+        elif self.tokenizer.keyWord() in ["true", "false", "null", "this"]:
             self.debug("THIS?")
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
 
-        elif self.tokenizer.tokenType() == "identifier": # could be varName or varName[expr] or subroutineCall
-            self.write_output(self.tokenizer.writeToken()) # if it is just a variable name it'll get out from here
-
-            if self.tokenizer.symbol()=='[': #varName[expr ]
-                self.write_output(self.tokenizer.writeToken())
-
-                self.tokenizer.advance()
-                self.compileExpression()
-
-                self.tokenizer.advance()
-                assert self.tokenizer.symbol()==']'
-                self.write_output(self.tokenizer.writeToken())
-
-            elif self.tokenizer.symbol()=='(':
-                self.write_output(self.tokenizer.writeToken())
-                self.tokenizer.advance()
-                self.compileSubroutineCall()
-
-        elif self.tokenizer.tokenType()=="symbol" and self.tokenizer.symbol() =='(': #(expr)
+        elif self.tokenizer.symbol() =='(': #(expr)
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
             self.compileExpression()
@@ -479,11 +515,48 @@ class CompilationEngine:
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
 
-        elif self.tokenizer.tokenType()=="symbol" and self.tokenizer.symbol() in ['-', '~']: #unary
+        elif self.tokenizer.symbol() in ['-', '~']: #unary
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
-            self.compileTerm()
+            self.compileTerm() #expect term
+
+        elif self.tokenizer.tokenType() == "identifier": # could be varName or varName[expr] or subroutineCall
+            self.write_output(self.tokenizer.writeToken()) # if it is just a variable name it'll get out from here
             self.tokenizer.advance()
+
+            if self.tokenizer.symbol()=='[': #array access
+                self.write_output(self.tokenizer.writeToken())
+                self.tokenizer.advance()
+                self.compileExpression()
+                assert self.tokenizer.symbol()==']'
+                self.write_output(self.tokenizer.writeToken())
+                self.tokenizer.advance()
+
+            elif self.tokenizer.symbol()=='(': # subroutine call
+                self.write_output(self.tokenizer.writeToken())
+                self.tokenizer.advance()
+                self.compileExpressionList()
+                self.test_tokenizer.advance()
+                assert self.tokenizer.symbol()==')'
+                self.write_output(self.tokenizer.writeToken())
+                self.tokenizer.advance()
+
+            elif self.tokenizer.symbol()=='.': # var.subroutine_call
+                self.write_output(self.tokenizer.writeToken())
+                self.tokenizer.advance()
+
+                assert self.tokenizer.tokenType() == "identifier"
+                self.write_output(self.tokenizer.writeToken())
+                self.tokenizer.advance()
+
+                assert self.tokenizer.symbol()=='('
+                self.write_output(self.tokenizer.writeToken())
+                self.tokenizer.advance()
+                self.compileExpressionList()
+                self.tokenizer.advance()
+                assert self.tokenizer.symbol()==')'
+                self.write_output(self.tokenizer.writeToken())
+                self.tokenizer.advance()
 
         self.write_output("</term>")
 
@@ -494,17 +567,15 @@ class CompilationEngine:
             self.write_output("</expressionList>")
             return
         self.compileExpression()
-        self.tokenizer.advance()
         while self.tokenizer.symbol() == ',':
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
             self.compileExpression()
-            self.tokenizer.advance()
         self.write_output("</expressionList>")
 
 
     def compileSubroutineCall(self):
-        assert self.tokenizer.tokenType()=="identifier"
+        assert self.tokenizer.tokenType() == "identifier"
         self.write_output(self.tokenizer.writeToken())
 
         self.tokenizer.advance()
@@ -520,7 +591,7 @@ class CompilationEngine:
         elif self.tokenizer.symbol()=='.': #subroutinecall
             self.write_output(self.tokenizer.writeToken())
             self.tokenizer.advance()
-            assert self.tokenizer.tokenType()=="identifier" # subroutinename
+            assert self.tokenizer.tokenType() == "identifier" # subroutinename
             self.write_output(self.tokenizer.writeToken())
 
             self.tokenizer.advance()
@@ -530,12 +601,14 @@ class CompilationEngine:
             self.tokenizer.advance()
             self.compileExpressionList()
 
-            assert self.tokenizer.keyWord()==')'
+            assert self.tokenizer.symbol()==')'
             self.write_output(self.tokenizer.writeToken())
+
+        self.tokenizer.advance()
 
 
     def debug(self, custom_msg=""):
-        print("DEBUG:", custom_msg, self.tokenizer.token)
+        print("DEBUG:", self.tokenizer.token, self.tokenizer.tokenType(), custom_msg)
 
     def write_output(self, str_to_write):
         self.xml_file.write(str_to_write)
