@@ -5,9 +5,9 @@ import re
 
 
 class JackTokenizer:
-    def __init__(self, jack_file):
-        self.jack_file = open(jack_file, 'r')
-        self.num_chars = len(open(jack_file, 'r').read()) + len(open(jack_file, 'r').readlines())
+    def __init__(self, jack_filename):
+        self.jack_file = open(jack_filename, 'r')
+        self.num_chars = len(open(jack_filename, 'r').read()) + len(open(jack_filename, 'r').readlines())
         self.read_chars = 0
         self.tokens = []
         self.token_types = []
@@ -104,13 +104,96 @@ class JackTokenizer:
                 self.positions.append(m.start())
 
 
+def test_tokenizer(jack_filename):
+    tokenizer = JackTokenizer(jack_filename)
+    while tokenizer.hasMoreTokens():
+        tokenizer.advance()
+    token_xml = open(jack_filename.replace('.jack', 'T.xml'), 'w')
+    token_xml.write("<tokens>\n")
+    for tok,tok_typ in zip(tokenizer.tokens, tokenizer.token_types):
+        if tok=='<':
+            token_xml.write("<{}> {} </{}>\n".format(tok_typ,'&lt;',tok_typ))
+        elif tok=='>':
+            token_xml.write("<{}> {} </{}>\n".format(tok_typ,'&gt;',tok_typ))
+        elif tok=='"':
+            token_xml.write("<{}> {} </{}>\n".format(tok_typ,'&quot;',tok_typ))
+        elif tok=='&':
+            token_xml.write("<{}> {} </{}>\n".format(tok_typ,'&amp;',tok_typ))
+        else:
+            token_xml.write("<{}> {} </{}>\n".format(tok_typ,tok,tok_typ))
+    token_xml.write('</tokens>')
+    token_xml.close()
+
+
+class JackTokenizerStream:
+    def __init__(self, jack_filename):
+        tknzr = JackTokenizer(jack_filename)
+        while tknzr.hasMoreTokens():
+            tknzr.advance()
+        self.tokens = tknzr.tokens
+        self.token_types = tknzr.token_types
+        self.idx = 0
+    def hasMoreTokens(self):
+        return self.idx < len(self.tokens)
+    def advance(self):
+        self.idx += 1
+        self.token = self.tokens[self.idx-1]
+    def tokenType(self):
+        return self.token_types[self.idx-1]
+    def keyWord(self):
+        if self.tokenType()=="keyword":
+            return self.token
+        return
+    def symbol(self):
+        if self.tokenType()=="symbol":
+            return self.token
+        return
+    def identifier(self):
+        if self.tokenType()=="identifier":
+            return self.token
+        return
+    def intVal(self):
+        if self.tokenType()=="integerConstant":
+            return self.token
+        return
+    def stringVal(self):
+        if self.tokenType()=="stringConstant":
+            return self.token
+        return
+    def writeToken(self):
+        if self.token=='<':
+            return "<{}> {} </{}>".format(self.tokenType(),'&lt;',self.tokenType())
+        elif self.token=='>':
+            return "<{}> {} </{}>".format(self.tokenType(),'&gt;',self.tokenType())
+        elif self.token=='"':
+            return "<{}> {} </{}>".format(self.tokenType(),'&quot;',self.tokenType())
+        elif self.token=='&':
+            return "<{}> {} </{}>".format(self.tokenType(),'&amp;',self.tokenType())
+        else:
+            return "<{}> {} </{}>".format(self.tokenType(),self.token,self.tokenType())
+
+
+def test_tokenizer_stream(jack_filename):
+    tokenizer = JackTokenizerStream(jack_filename)
+    token_xml = open(jack_filename.replace('.jack', 'T.xml'), 'w')
+    token_xml.write("<tokens>\n")
+    while tokenizer.hasMoreTokens():
+        tokenizer.advance()
+        token_xml.write(tokenizer.writeToken())
+        token_xml.write('\n')
+    token_xml.write('</tokens>')
+    token_xml.close()
+
+
 class CompilationEngine:
-    def __init__(self, jack_file, xml_file):
-        self.jack_file = jack_file
-        self.xml_file = xml_file
+    def __init__(self, jack_filename):
+        self.tokenizer = JackTokenizerStream(jack_filename)
 
     def compileClass(self):
-        pass
+        self.write_output('<class>')
+        self.tokenizer.advance()
+        assert self.tokenizer.keyWord() == 'class'
+        self.write_output('</class>')
 
     def compileClassVarDec(self):
         pass
@@ -151,33 +234,20 @@ class CompilationEngine:
     def compileExpressionList(self):
         pass
 
+    def write_XML(self, xml_file):
+        self.xml_file = xml_file
+        self.compileClass()
 
-def test_tokenizer(jack_filename):
-    tokenizer = JackTokenizer(jack_filename)
-    while tokenizer.hasMoreTokens():
-        tokenizer.advance()
-    token_xml = open(jack_filename.replace('.jack', 'T.xml'), 'w')
-    token_xml.write("<tokens>\n")
-    for tok,tok_typ in zip(tokenizer.tokens, tokenizer.token_types):
-        if tok=='<':
-            token_xml.write("<{}> {} </{}>\n".format(tok_typ,'&lt;',tok_typ))
-        elif tok=='>':
-            token_xml.write("<{}> {} </{}>\n".format(tok_typ,'&gt;',tok_typ))
-        elif tok=='"':
-            token_xml.write("<{}> {} </{}>\n".format(tok_typ,'&quot;',tok_typ))
-        elif tok=='&':
-            token_xml.write("<{}> {} </{}>\n".format(tok_typ,'&amp;',tok_typ))
-        else:
-            token_xml.write("<{}> {} </{}>\n".format(tok_typ,tok,tok_typ))
-    token_xml.write('</tokens>')
-    token_xml.close()
+    def write_output(self, str_to_write):
+        self.xml_file.write(str_to_write)
+        self.xml_file.write('\n')
 
 
-def write_xml(jack_filename):
-    xml_filename = jack_filename.replace('.jack', '.xml')
-    
-    jack_file.close()
-    xml_file.close()
+def test_analyzer(jack_filename):
+    compilation_engine = CompilationEngine(jack_filename)
+    compiled_xml_file = open(jack_filename.replace('.jack', '.xml'), 'w')
+    compilation_engine.write_XML(compiled_xml_file)
+    compiled_xml_file.close()
 
 
 def main():
@@ -193,8 +263,9 @@ def main():
         raise ValueError("No file/dir with arg")
 
     for jack_filename in jack_filenames:
-        test_tokenizer(jack_filename)
-        # write_xml(jack_filename)
+        # test_tokenizer(jack_filename)
+        # test_tokenizer_stream(jack_filename)
+        test_analyzer(jack_filename)
 
 
 if __name__=="__main__":
