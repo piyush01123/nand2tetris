@@ -22,54 +22,59 @@
 // RAM[24576] records the keyboard. If nothing is pressed, it is zero, else non-zero
 
 
-(BLACK) // Makes Screen black
-@24576
-D=M
+(LOOP)
+
+@SCREEN // loads 16... into A
+D=A     // D register holds it
+@i      // load register i
+M=D     // set register i to screen value
+
+@KBD    // load keyboard input register into memory
+D=M     // read value
+
+// conditionally set screen to black or white loops
 @WHITE
-D;JEQ // if RAM[24576]==0, then goto (WHITE)
-@16384
-M=-1
-@17648
-M=-1
-@18349
-M=-1
-@19444
-M=-1
-@20771
-M=-1
-@21031
-M=-1
-@22596
-M=-1
-@23754
-M=-1
-@24575
-M=-1
+D;JEQ   // if keyboard input is 0, go to white
 @BLACK
+0;JMP   // else go to black
+
+// set all bits to 1
+(BLACK)
+// set current address to value
+@i
+A=M
+M=-1
+
+// increment i by 1
+@i
+M=M+1
+@i
+// check where we are
+D=M  // load current iteration value
+@KBD // load screen value
+D=A-D // once we reach address of kbd terminate this inner loop
+@LOOP
+D;JEQ    // Infinite Loop back to top
+@BLACK   // else go back to black
 0;JMP
 
+// set all bits to 0
 (WHITE)
-@24576
-D=M
-@BLACK
-D;JNE // if RAM[24576]!=0, then goto (BLACK)
-@16384
+// set current address to value
+@i
+A=M
 M=0
-@17648
-M=0
-@18349
-M=0
-@19444
-M=0
-@20771
-M=0
-@21031
-M=0
-@22596
-M=0
-@23754
-M=0
-@24575
-M=0
-@WHITE
+
+// increment i by 1
+@i
+M=M+1
+@i
+
+// check where we are
+D=M  // load current iteration value
+@KBD // load screen value
+D=A-D // once we reach address of kbd terminate this inner loop
+@LOOP
+D;JEQ    // Infinite Loop back to top
+@WHITE   // else go back to black
 0;JMP
